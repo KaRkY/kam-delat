@@ -1,6 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>si.kamdelat</groupId>
@@ -19,7 +20,7 @@
     <version.cglib>2.2.2</version.cglib>
     <version.joda>2.1</version.joda>
     <version.guava>13.0</version.guava>
-    
+
     <project.compile.version>1.7</project.compile.version>
   </properties>
 
@@ -57,6 +58,11 @@
         <artifactId>jcl-over-slf4j</artifactId>
         <version>${version.slf4j}</version>
         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${version.slf4j}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -269,6 +275,11 @@
             <autoVersionSubmodules>true</autoVersionSubmodules>
             <tagNameFormat>v@{project.version}</tagNameFormat>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>appassembler-maven-plugin</artifactId>
+          <version>1.2.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

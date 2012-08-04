@@ -1,5 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>si.kamdelat</groupId>
@@ -22,5 +23,50 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>kam-delat-gui</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+    </dependency>
   </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>appassembler-maven-plugin</artifactId>
+        <executions>
+            <execution>
+              <id>assemble</id>
+              <phase>package</phase>
+              <goals>
+                <goal>assemble</goal>
+              </goals>
+              <inherited>false</inherited>
+              <configuration>
+              
+                <repositoryLayout>flat</repositoryLayout>
+              
+                <programs>
+                  <program>
+                    <mainClass>si.kamdelat.Boot</mainClass>
+                    <name>kam-delat</name>
+                  </program>
+                </programs>
+                
+                <platforms>
+                  <platform>windows</platform>
+                  <platform>unix</platform>
+                </platforms>
+                
+              </configuration>
+            </execution>
+          </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
