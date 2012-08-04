@@ -32,6 +32,7 @@ public class MainWindow implements Window {
     frame = new JFrame(title);
     frame.setMinimumSize(new Dimension(600, 400));
     frame.setLayout(new FlowLayout());
+    frame.setLocationByPlatform(true);
 
     final URL applicationIconURL = Resources.getResource("icons/application.png");
     if (applicationIconURL != null)
