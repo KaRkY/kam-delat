@@ -26,18 +26,18 @@ public class Boot {
     logger.trace("Registering SLF4J for JUL bridge handler.");
     SLF4JBridgeHandler.install();
 
-    logger.trace("Creating application context.");
-    context = new GenericXmlApplicationContext("classpath:root-applicationContext.xml");
-
-    logger.trace("Registering shutdown hook.");
-    context.registerShutdownHook();
-
     logger.trace("Setting look and feel.");
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
       logger.error("Look and feel could not be set.", e);
     }
+
+    logger.trace("Creating application context.");
+    context = new GenericXmlApplicationContext("classpath:root-applicationContext.xml");
+
+    logger.trace("Registering shutdown hook.");
+    context.registerShutdownHook();
 
     Thread.currentThread();
     Thread.setDefaultUncaughtExceptionHandler(new LoggingExceptionHandler());
