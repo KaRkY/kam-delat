@@ -14,10 +14,16 @@
     <constructor-arg index="1" ref="guiBus" />
   </bean>
   
+  <bean id="newVisitWindow" class="si.kamdelat.gui.NewVisitWindow">
+    <constructor-arg index="0" value="#{mainWindow.frame}"/>
+    <constructor-arg index="1" value="Novi obisk"/>
+  </bean>
+  
   <bean class="si.kamdelat.common.EventBusConfigurer">
     <constructor-arg index="0">
       <list>
         <ref bean="mainWindow"/>
+        <ref bean="newVisitWindow"/>
       </list>
     </constructor-arg>
     <constructor-arg index="1" ref="guiBus" />

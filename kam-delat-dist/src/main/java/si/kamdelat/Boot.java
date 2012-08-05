@@ -12,7 +12,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
-import si.kamdelat.gui.Window;
+import si.kamdelat.gui.ApplicationWindow;
 
 public class Boot {
   private static Boot                     booter;
@@ -60,7 +60,7 @@ public class Boot {
 
       @Override
       public void run() {
-        final Window mainWindow = context.getBean("mainWindow", Window.class);
+        final ApplicationWindow mainWindow = context.getBean("mainWindow", ApplicationWindow.class);
         mainWindow.show();
       }
     });

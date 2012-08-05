@@ -4,6 +4,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
@@ -16,12 +19,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import si.kamdelat.events.CloseEvent;
+import si.kamdelat.events.OpenNewVisit;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.io.Resources;
 
-public class MainWindow implements Window {
+public class MainWindow implements ApplicationWindow {
   private final Logger   logger = LoggerFactory.getLogger(this.getClass());
   private final JFrame   frame;
   private final EventBus bus;
@@ -40,8 +44,13 @@ public class MainWindow implements Window {
 
     final ImageIcon icon = new ImageIcon(Resources.getResource("icons/button/accept.png"));
     final JButton button = new JButton(new ImageIcon(icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
-    // button.setBorder(BorderFactory.createEmptyBorder());
-    // button.setBackground(new Color(0, 0, 0, 0));
+    button.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(final ActionEvent event) {
+        bus.post(new OpenNewVisit(MainWindow.this));
+      }
+    });
     frame.add(button);
 
     registerWindowListener();
@@ -56,6 +65,11 @@ public class MainWindow implements Window {
   @Subscribe
   public void close(final CloseEvent event) {
     close();
+  }
+
+  @Override
+  public Window getFrame() {
+    return frame;
   }
 
   @Override
