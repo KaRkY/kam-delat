@@ -1,24 +1,17 @@
 package si.kamdelat.domain;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import org.joda.time.LocalDate;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 public class Visit {
-  // =================================================================================================================
-  // Fields
-  // =================================================================================================================
   private final Identifier id;
   private final LocalDate  date;
 
-  // =================================================================================================================
-  // Constructors
-  // =================================================================================================================
   public Visit(final Identifier id, final LocalDate date) {
-    this.id = checkNotNull(id, "Id cannot be null.");
-    this.date = checkNotNull(date, "Date cannot be null.");
+    this.id = Preconditions.checkNotNull(id, "Id cannot be null.");
+    this.date = Preconditions.checkNotNull(date, "Date cannot be null.");
   }
 
   public LocalDate date() {
@@ -30,7 +23,8 @@ public class Visit {
     if (obj instanceof Visit) {
       final Visit other = (Visit) obj;
       return Objects.equal(date, other.date);
-    } else
+    }
+    else
       return false;
   }
 
@@ -39,9 +33,6 @@ public class Visit {
     return Objects.hashCode(date);
   }
 
-  // =================================================================================================================
-  // Methods
-  // =================================================================================================================
   public Identifier id() {
     return id;
   }

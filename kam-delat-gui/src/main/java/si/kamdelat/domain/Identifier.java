@@ -15,9 +15,6 @@
  */
 package si.kamdelat.domain;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.Serializable;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -27,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.hash.HashFunction;
@@ -39,126 +37,73 @@ import com.google.common.util.concurrent.ExecutionError;
  * 
  * @author Rene Svetina
  */
-public final class Identifier implements
-		Serializable
-{
-	// =================================================================================================================
-	// Fields
-	// =================================================================================================================
+public final class Identifier implements Serializable {
+  private static final long                      serialVersionUID  = 6346749479769179997L;
+  private static final int                       CACHE_EXPIRE_TIME = 10;
+  private static final long                      CACHE_SIZE        = 10000L;
+  private static final HashFunction              HF                = Hashing.sha1();
+  private static final Cache<String, Identifier> CACHE;
+  private static final Pattern                   HASH_PATTERN;
+  private final String                           hash;
 
-	private static final long						serialVersionUID	= 6346749479769179997L;
-	private static final int						CACHE_EXPIRE_TIME	= 10;
-	private static final long						CACHE_SIZE			= 10000L;
-	private static final HashFunction				HF					= Hashing.sha1();
-	private static final Cache<String, Identifier>	CACHE;
-	private static final Pattern					HASH_PATTERN;
-	private final String							hash;
+  static {
+    CACHE = CacheBuilder.newBuilder().maximumSize(Identifier.CACHE_SIZE).expireAfterAccess(Identifier.CACHE_EXPIRE_TIME, TimeUnit.MINUTES).build();
+    HASH_PATTERN = Pattern.compile("[A-Fa-f0-9]{40}");
+  }
 
-	// =================================================================================================================
-	// Constructors
-	// =================================================================================================================
+  private Identifier() {
+    final UUID uuid = UUID.randomUUID();
+    final Hasher hasher = Identifier.HF.newHasher();
+    hasher.putString(uuid.toString());
+    hash = hasher.hash().toString();
+  }
 
-	static
-	{
-		CACHE = CacheBuilder.newBuilder()
-				.maximumSize(CACHE_SIZE)
-				.expireAfterAccess(CACHE_EXPIRE_TIME, TimeUnit.MINUTES)
-				.build();
-		HASH_PATTERN = Pattern.compile("[A-Fa-f0-9]{40}");
-	}
+  private Identifier(final String hash) {
+    super();
+    this.hash = hash;
+  }
 
-	private Identifier()
-	{
-		final UUID uuid = UUID.randomUUID();
-		Hasher hasher = HF.newHasher();
-		hasher.putString(uuid.toString());
-		hash = hasher.hash().toString();
-	}
+  @Override
+  public boolean equals(final Object obj) {
+    if (obj instanceof Identifier) {
+      final Identifier other = (Identifier) obj;
+      return Objects.equal(hash, other.hash);
+    }
+    else
+      return false;
+  }
 
-	private Identifier(final String hash)
-	{
-		super();
-		this.hash = hash;
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(hash);
+  }
 
-	// =================================================================================================================
-	// Methods
-	// =================================================================================================================
+  @Override
+  public String toString() {
+    return hash;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(final Object obj)
-	{
-		if (obj instanceof Identifier)
-		{
-			Identifier other = (Identifier) obj;
-			return Objects.equal(hash, other.hash);
-		}
-		else
-		{
-			return false;
-		}
-	}
+  public static Identifier newId() {
+    final Identifier result = new Identifier();
+    Identifier.CACHE.put(result.toString(), result);
+    return result;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode()
-	{
-		return Objects.hashCode(hash);
-	}
+  public static Identifier valueOf(final String hash) {
+    final Matcher hashMatcher = Identifier.HASH_PATTERN.matcher(Preconditions.checkNotNull(hash, "Hash cannot be null."));
+    Preconditions.checkArgument(hashMatcher.matches(), String.format("%s: does not matches predefined pattern [A-Fa-f0-9]{64}", hash));
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString()
-	{
-		return hash;
-	}
+    try {
+      return Identifier.CACHE.get(hash, new Callable<Identifier>() {
 
-	/**
-	 * @return new random unique id.
-	 */
-	public static Identifier newId()
-	{
-		final Identifier result = new Identifier();
-		CACHE.put(result.toString(), result);
-		return result;
-	}
+        @Override
+        public Identifier call() throws Exception {
+          return new Identifier(hash);
+        }
 
-	/**
-	 * @param hash
-	 *            String representation of Identifier.
-	 * @return Identifier representation of hash string.
-	 */
-	public static Identifier valueOf(final String hash)
-	{
-		final Matcher hashMatcher = HASH_PATTERN.matcher(checkNotNull(hash, "Hash cannot be null."));
-		checkArgument(hashMatcher.matches(), String.format("%s: does not matches predefined pattern [A-Fa-f0-9]{64}",
-				hash));
-
-		try
-		{
-			return CACHE.get(hash, new Callable<Identifier>()
-			{
-
-				@Override
-				public Identifier call() throws Exception
-				{
-					return new Identifier(hash);
-				}
-
-			});
-		} catch (ExecutionException e)
-		{
-			throw new ExecutionError(new Error("Could not create Id", e));
-		}
-	}
+      });
+    } catch (final ExecutionException e) {
+      throw new ExecutionError(new Error("Could not create Id", e));
+    }
+  }
 }

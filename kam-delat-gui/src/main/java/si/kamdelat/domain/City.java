@@ -1,24 +1,17 @@
 package si.kamdelat.domain;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 public class City {
-  // =================================================================================================================
-  // Fields
-  // =================================================================================================================
   private final Identifier id;
   private final Name       name;
   private final Post       post;
 
-  // =================================================================================================================
-  // Constructors
-  // =================================================================================================================
   public City(final Identifier id, final Name name, final Post post) {
-    this.post = checkNotNull(post, "Post cannot be null.");
-    this.id = checkNotNull(id, "Id canot be null.");
-    this.name = checkNotNull(name, "Name canot be null.");
+    this.post = Preconditions.checkNotNull(post, "Post cannot be null.");
+    this.id = Preconditions.checkNotNull(id, "Id canot be null.");
+    this.name = Preconditions.checkNotNull(name, "Name canot be null.");
   }
 
   @Override
@@ -26,7 +19,8 @@ public class City {
     if (obj instanceof City) {
       final City other = (City) obj;
       return Objects.equal(name, other.name);
-    } else
+    }
+    else
       return false;
   }
 
@@ -35,9 +29,6 @@ public class City {
     return Objects.hashCode(name);
   }
 
-  // =================================================================================================================
-  // Methods
-  // =================================================================================================================
   public Identifier id() {
     return id;
   }

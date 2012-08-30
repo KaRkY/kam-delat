@@ -1,24 +1,16 @@
 package si.kamdelat.domain;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 public class Post {
-  // =================================================================================================================
-  // Fields
-  // =================================================================================================================
   private final Integer postalNumber;
   private final Name    name;
 
-  // =================================================================================================================
-  // Constructors
-  // =================================================================================================================
   public Post(final Integer postalNumber, final Name name) {
-    this.postalNumber = checkNotNull(postalNumber, "Postal number cannot be null.");
-    checkArgument(postalNumber > 999 && postalNumber < 10000, "Postal number must bi 4 digits");
-    this.name = checkNotNull(name, "Name cannot be null.");
+    this.postalNumber = Preconditions.checkNotNull(postalNumber, "Postal number cannot be null.");
+    Preconditions.checkArgument(postalNumber > 999 && postalNumber < 10000, "Postal number must bi 4 digits");
+    this.name = Preconditions.checkNotNull(name, "Name cannot be null.");
   }
 
   @Override
@@ -26,7 +18,8 @@ public class Post {
     if (obj instanceof Post) {
       final Post other = (Post) obj;
       return Objects.equal(postalNumber, other.postalNumber);
-    } else
+    }
+    else
       return false;
   }
 
@@ -39,9 +32,6 @@ public class Post {
     return name;
   }
 
-  // =================================================================================================================
-  // Methods
-  // =================================================================================================================
   public Integer postalNumber() {
     return postalNumber;
   }
