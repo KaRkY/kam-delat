@@ -21,35 +21,34 @@ public class Boot {
   private final GenericApplicationContext context;
 
   public Boot(final String[] args) {
+
     logger.info("Initializing application.");
 
-    logger.trace("Registering SLF4J for JUL bridge handler.");
-    SLF4JBridgeHandler.install();
+    installJULSLF4JBridgeHandler();
 
-    logger.trace("Setting look and feel.");
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-      logger.error("Look and feel could not be set.", e);
-    }
+    setupSwingLookAndFeel();
 
-    logger.trace("Creating application context.");
-    context = new GenericXmlApplicationContext("classpath:root-applicationContext.xml");
+    context = createApplicationContext();
 
-    logger.trace("Registering shutdown hook.");
     context.registerShutdownHook();
 
-    Thread.currentThread();
-    Thread.setDefaultUncaughtExceptionHandler(new LoggingExceptionHandler());
+    registerUncaughtExceptionHandler();
     logger.info("Initialization finished.");
   }
 
-  /**
-   * @param args
-   */
-  public static void main(final String[] args) {
-    booter = new Boot(args);
-    booter.run();
+  private GenericApplicationContext createApplicationContext() {
+    logger.trace("Creating application context.");
+    return new GenericXmlApplicationContext("classpath:root-applicationContext.xml");
+  }
+
+  private void installJULSLF4JBridgeHandler() {
+    logger.trace("Registering SLF4J for JUL bridge handler.");
+    SLF4JBridgeHandler.install();
+  }
+
+  private void registerUncaughtExceptionHandler() {
+    logger.trace("Registering uncaught exception handler.");
+    Thread.setDefaultUncaughtExceptionHandler(new LoggingExceptionHandler());
   }
 
   private void run() {
@@ -64,6 +63,24 @@ public class Boot {
         mainWindow.show();
       }
     });
+  }
+
+  private void setupSwingLookAndFeel() {
+    logger.trace("Setting look and feel.");
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+      logger.error("Look and feel could not be set.", e);
+    }
+  }
+
+  /**
+   * @param args
+   */
+
+  public static void main(final String[] args) {
+    booter = new Boot(args);
+    booter.run();
   }
 
   public class LoggingExceptionHandler implements UncaughtExceptionHandler {

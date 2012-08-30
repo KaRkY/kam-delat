@@ -14,14 +14,20 @@ public class City {
     this.name = Preconditions.checkNotNull(name, "Name canot be null.");
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(final Object obj) {
-    if (obj instanceof City) {
-      final City other = (City) obj;
-      return Objects.equal(name, other.name);
-    }
-    else
-      return false;
+    if (obj == this) return true;
+    if (obj == null) return false;
+    if (!getClass().equals(obj.getClass())) return false;
+
+    final City other = (City) obj;
+
+    return Objects.equal(name, other.name);
   }
 
   @Override
