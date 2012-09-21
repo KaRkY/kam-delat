@@ -10,11 +10,11 @@ import org.springframework.beans.factory.InitializingBean;
 import com.google.common.eventbus.EventBus;
 
 public class EventBusConfigurer implements InitializingBean, DisposableBean {
-  private final Logger       logger = LoggerFactory.getLogger(this.getClass());
-  private final EventBus     bus;
-  private final List<Object> listeners;
+  private final Logger                 logger = LoggerFactory.getLogger(this.getClass());
+  private final EventBus               bus;
+  private final List<? extends Object> listeners;
 
-  public EventBusConfigurer(final List<Object> listeners, final EventBus bus) {
+  public EventBusConfigurer(final List<? extends Object> listeners, final EventBus bus) {
     this.listeners = listeners;
     this.bus = bus;
   }
