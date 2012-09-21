@@ -47,7 +47,8 @@ public final class Identifier implements Serializable {
   private final String                           hash;
 
   static {
-    CACHE = CacheBuilder.newBuilder().maximumSize(Identifier.CACHE_SIZE).expireAfterAccess(Identifier.CACHE_EXPIRE_TIME, TimeUnit.MINUTES).build();
+    CACHE = CacheBuilder.newBuilder().maximumSize(Identifier.CACHE_SIZE)
+        .expireAfterAccess(Identifier.CACHE_EXPIRE_TIME, TimeUnit.MINUTES).build();
     HASH_PATTERN = Pattern.compile("[A-Fa-f0-9]{40}");
   }
 
@@ -63,14 +64,20 @@ public final class Identifier implements Serializable {
     this.hash = hash;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(final Object obj) {
-    if (obj instanceof Identifier) {
-      final Identifier other = (Identifier) obj;
-      return Objects.equal(hash, other.hash);
-    }
-    else
-      return false;
+    if (obj == this) return true;
+    if (obj == null) return false;
+    if (!getClass().equals(obj.getClass())) return false;
+
+    final Identifier other = (Identifier) obj;
+
+    return Objects.equal(hash, other.hash);
   }
 
   @Override
@@ -90,8 +97,10 @@ public final class Identifier implements Serializable {
   }
 
   public static Identifier valueOf(final String hash) {
-    final Matcher hashMatcher = Identifier.HASH_PATTERN.matcher(Preconditions.checkNotNull(hash, "Hash cannot be null."));
-    Preconditions.checkArgument(hashMatcher.matches(), String.format("%s: does not matches predefined pattern [A-Fa-f0-9]{64}", hash));
+    final Matcher hashMatcher = Identifier.HASH_PATTERN.matcher(Preconditions
+        .checkNotNull(hash, "Hash cannot be null."));
+    Preconditions.checkArgument(hashMatcher.matches(),
+        String.format("%s: does not matches predefined pattern [A-Fa-f0-9]{64}", hash));
 
     try {
       return Identifier.CACHE.get(hash, new Callable<Identifier>() {

@@ -18,14 +18,20 @@ public class Visit {
     return date;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(final Object obj) {
-    if (obj instanceof Visit) {
-      final Visit other = (Visit) obj;
-      return Objects.equal(date, other.date);
-    }
-    else
-      return false;
+    if (obj == this) return true;
+    if (obj == null) return false;
+    if (!getClass().equals(obj.getClass())) return false;
+
+    final Visit other = (Visit) obj;
+
+    return Objects.equal(date, other.date);
   }
 
   @Override

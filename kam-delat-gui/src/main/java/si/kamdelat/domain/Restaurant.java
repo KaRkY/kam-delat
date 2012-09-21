@@ -29,14 +29,20 @@ public class Restaurant {
     return city;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(final Object obj) {
-    if (obj instanceof Restaurant) {
-      final Restaurant other = (Restaurant) obj;
-      return Objects.equal(city, other.city) && Objects.equal(name, other.name);
-    }
-    else
-      return false;
+    if (obj == this) return true;
+    if (obj == null) return false;
+    if (!getClass().equals(obj.getClass())) return false;
+
+    final Restaurant other = (Restaurant) obj;
+
+    return Objects.equal(city, other.city) && Objects.equal(name, other.name);
   }
 
   @Override
@@ -62,6 +68,7 @@ public class Restaurant {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("id", id).add("name", name).add("city", city).add("visits", visits).toString();
+    return Objects.toStringHelper(this).add("id", id).add("name", name).add("city", city).add("visits", visits)
+        .toString();
   }
 }

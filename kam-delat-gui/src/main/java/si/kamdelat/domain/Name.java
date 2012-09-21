@@ -40,14 +40,20 @@ public final class Name implements Serializable {
     Preconditions.checkArgument(!this.name.isPresent() || !this.name.get().equals("N/A"), "Name can not be N/A");
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(final Object obj) {
-    if (obj instanceof Name) {
-      final Name other = (Name) obj;
-      return Objects.equal(name, other.name);
-    }
-    else
-      return false;
+    if (obj == this) return true;
+    if (obj == null) return false;
+    if (!getClass().equals(obj.getClass())) return false;
+
+    final Name other = (Name) obj;
+
+    return Objects.equal(name, other.name);
   }
 
   @Override
