@@ -1,4 +1,2 @@
 kam-delat
 =========
-
-New
